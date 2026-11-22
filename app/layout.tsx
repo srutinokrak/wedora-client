@@ -4,8 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 
 import { cn } from "@/lib/utils";
-import { SiteNavbar } from "@/components/site-navbar";
-import { SiteFooter } from "@/components/site-footer";
+import { AppShell } from "@/components/app-shell"
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'})
 
@@ -27,9 +26,7 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
-         <SiteNavbar/>
-          <div className="min-h-[calc(100vh-4rem)]">{children}</div>
-          <SiteFooter />
+          <AppShell>{children}</AppShell>
         </ThemeProvider>
       </body>
     </html>

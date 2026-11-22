@@ -1,47 +1,56 @@
 "use client"
-import { useState } from "react"
-import { AuthForm } from "@/components/auth-form"
+
+import { AuthForm, type AuthFormData } from "@/components/auth-form"
 import { authClient } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
 
-type AuthformData = {
-  name: string
-  email: string
-  password: string
-  role: "customer" | "vendor"
-}
-
 const SignUpPage = () => {
   const router = useRouter()
-  const [errorMessage, setError] = useState("")
-  const handleSignup = async (data: AuthformData) => {
-    const { data: signupResponse, error } = await authClient.signUp.email({
+
+  function getSafeCallbackURL() {
+    const callbackURL = new URLSearchParams(window.location.search).get("callbackURL")
+    return callbackURL?.startsWith("/") && !callbackURL.startsWith("//")
+      ? callbackURL
+      : "/"
+  }
+
+  async function handleSignup(data: AuthFormData) {
+    const { data: response, error } = await authClient.signUp.email({
       name: data.name,
       email: data.email,
       password: data.password,
       role: data.role,
-      callbackURL: "/",
+      callbackURL: getSafeCallbackURL(),
     })
     if (error) {
-      setError(error.message || "An error occurred during signup.")
-      return
+      throw new Error(error.message || "An error occurred during signup.")
     }
-    if (!signupResponse) {
-      setError("Signup failed. Please try again.")
-      return
+    if (!response) {
+      throw new Error("Signup failed. Please try again.")
     }
-    router.refresh() // refresh the page to update the session
-    router.push("/")
+    router.refresh()
+    router.push(getSafeCallbackURL())
+  }
+
+  async function handleGoogleSignIn(role: AuthFormData["role"]) {
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: getSafeCallbackURL(),
+      additionalData: { role },
+    })
+
+    if (error) {
+      throw new Error(error.message)
+    }
   }
 
   return (
     <main className="flex min-h-svh items-center justify-center px-4 py-16">
-      {errorMessage && (
-        <p role="alert" className="mb-4 text-sm text-red-500">
-          {errorMessage}
-        </p>
-      )}
-      <AuthForm mode="signup" onSubmit={handleSignup} />
+      <AuthForm
+        mode="signup"
+        onSubmit={handleSignup}
+        onGoogleSignIn={handleGoogleSignIn}
+      />
     </main>
   )
 }

@@ -39,13 +39,17 @@ const iconClass =
 export function AuthForm({
   mode,
   onSubmit,
+  onGoogleSignIn,
 }: {
   mode: Mode
   onSubmit?: (data: AuthFormData) => Promise<void | { error?: { message?: string | null } }>
+  onGoogleSignIn: (role: AuthFormData["role"]) => Promise<void>
 }) {
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const [selectedRole, setSelectedRole] = useState<AuthFormData["role"]>("customer")
 
   // 1. Collect every input inside the form by its name.
   function collectFormData(form: HTMLFormElement): AuthFormData {
@@ -82,6 +86,22 @@ export function AuthForm({
       )
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setGoogleLoading(true)
+    setError(null)
+
+    try {
+      await onGoogleSignIn(selectedRole)
+    } catch (signInError) {
+      setError(
+        signInError instanceof Error
+          ? signInError.message
+          : "Google sign-in failed. Please try again."
+      )
+      setGoogleLoading(false)
     }
   }
 
@@ -141,7 +161,17 @@ export function AuthForm({
             name="password"
             type={showPassword ? "text" : "password"}
             required
-            minLength={8}
+            minLength={mode === "signup" ? 6 : undefined}
+            pattern={
+              mode === "signup"
+                ? "(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                : undefined
+            }
+            title={
+              mode === "signup"
+                ? "Use at least 6 characters, including an uppercase and a lowercase letter."
+                : undefined
+            }
             placeholder="Password"
             className={cn(inputClass, "pr-10")}
           />
@@ -163,7 +193,10 @@ export function AuthForm({
         {/* Pick a role (Sign Up only) — hidden radio buttons styled as pills */}
         {mode === "signup" && (
           <div>
-            <p className="mb-2 text-sm text-muted-foreground">I am a:</p>
+            <p className="text-xs text-muted-foreground">
+              At least 6 characters, with one uppercase and one lowercase letter.
+            </p>
+            <p className="mb-2 mt-4 text-sm text-muted-foreground">I am a:</p>
             <div className="flex gap-1 rounded-xl bg-[#111112] p-1">
               {roleOptions.map((role) => (
                 <label key={role.value} className="flex-1 cursor-pointer">
@@ -171,7 +204,8 @@ export function AuthForm({
                     type="radio"
                     name="role"
                     value={role.value}
-                    defaultChecked={role.value === "customer"}
+                    checked={selectedRole === role.value}
+                    onChange={() => setSelectedRole(role.value)}
                     className="peer sr-only"
                   />
                   <span className="block rounded-lg py-2 text-center text-sm text-muted-foreground transition-colors peer-checked:bg-primary peer-checked:font-medium peer-checked:text-primary-foreground">
@@ -190,11 +224,30 @@ export function AuthForm({
         {/* Server error message (e.g. "email is already taken") */}
         {error && <p className="text-xs text-destructive">{error}</p>}
 
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="h-px flex-1 bg-border" />
+          or continue with
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          disabled={loading || googleLoading}
+          onClick={handleGoogleSignIn}
+          className="w-full rounded-xl"
+        >
+          <span aria-hidden="true" className="font-bold text-[#4285f4]">
+            G
+          </span>
+          {googleLoading ? "Connecting to Google..." : "Continue with Google"}
+        </Button>
+
         {/* Switch link below the button */}
         <p className="mt-1 text-center text-sm text-muted-foreground">
           {mode === "signin" ? (
             <>
-              New to HireLoop?{" "}
+              New to WedPlan?{" "}
               <Link href="/sign-up" className="text-primary hover:underline">
                 Sign Up
               </Link>
