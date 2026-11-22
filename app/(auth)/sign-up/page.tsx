@@ -8,7 +8,7 @@ type AuthformData = {
   name: string
   email: string
   password: string
-  role: "customer" | "vendor" | "admin"
+  role: "customer" | "vendor"
 }
 
 const SignUpPage = () => {
@@ -22,9 +22,12 @@ const SignUpPage = () => {
       role: data.role,
       callbackURL: "/",
     })
-    console.log("Signup response:", signupResponse, error)
     if (error) {
       setError(error.message || "An error occurred during signup.")
+      return
+    }
+    if (!signupResponse) {
+      setError("Signup failed. Please try again.")
       return
     }
     router.refresh() // refresh the page to update the session

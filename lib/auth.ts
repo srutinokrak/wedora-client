@@ -22,10 +22,7 @@ export const auth = betterAuth({
         before: async (user) => ({
           data: {
             ...user,
-            role:
-              user.role === "vendor" || user.role === "admin"
-                ? user.role
-                : "customer",
+            role: user.role === "vendor" ? "vendor" : "customer",
           },
         }),
       },

@@ -15,12 +15,19 @@ const SignInPage = () => {
     email: data.email, 
     password: data.password, 
     rememberMe:true,
-    callbackURL: '/', // An optional URL to redirect to after the user signs in. (optional)
+    callbackURL: getSafeCallbackURL(),
 });
-console.log('suign in response',SignInResponse,error);
     if (error) throw error; // sends the message to the form to show it
+    if (!SignInResponse) throw new Error('Sign in failed. Please try again.');
     router.refresh();
-    router.push('/');
+    router.push(getSafeCallbackURL());
+    }
+
+    function getSafeCallbackURL() {
+      const callbackURL = new URLSearchParams(window.location.search).get('callbackURL');
+      return callbackURL?.startsWith('/') && !callbackURL.startsWith('//')
+        ? callbackURL
+        : '/';
     }
 
     return (

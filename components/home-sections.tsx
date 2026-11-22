@@ -20,42 +20,42 @@ import {
 const categories = [
   {
     name: "Photography & Videography",
-    href: "/services?category=photography-videography",
+    href: "/services?category=Photography%20%26%20Videography",
     image:
       "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=85",
     icon: CameraIcon,
   },
   {
     name: "Wedding Venues",
-    href: "/services?category=wedding-venues",
+    href: "/services?category=Wedding%20Venues",
     image:
       "https://images.unsplash.com/photo-1507504031003-b417219a0fde?auto=format&fit=crop&w=900&q=85",
     icon: StoreIcon,
   },
   {
     name: "Decoration & Florist",
-    href: "/services?category=decoration-florist",
+    href: "/services?category=Decoration%20%26%20Florist",
     image:
       "https://images.unsplash.com/photo-1478146896981-b80fe463b330?auto=format&fit=crop&w=900&q=85",
     icon: Flower2Icon,
   },
   {
     name: "Catering Services",
-    href: "/services?category=catering-services",
+    href: "/services?category=Catering%20Services",
     image:
       "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=900&q=85",
     icon: ChefHatIcon,
   },
   {
     name: "Makeup & Styling",
-    href: "/services?category=makeup-styling",
+    href: "/services?category=Makeup%20%26%20Styling",
     image:
       "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=900&q=85",
     icon: PaletteIcon,
   },
   {
     name: "Wedding Fashion",
-    href: "/services?category=wedding-fashion",
+    href: "/services?category=Wedding%20Fashion",
     image:
       "https://images.unsplash.com/photo-1594552072238-b8a33785b261?auto=format&fit=crop&w=900&q=85",
     icon: SwatchBookIcon,

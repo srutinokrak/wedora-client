@@ -20,14 +20,13 @@ export type AuthFormData = {
   name: string
   email: string
   password: string
-  role: "customer" | "vendor" | "admin"
+  role: "customer" | "vendor"
 }
 
 // The pick-a-role pills shown on Sign Up.
 const roleOptions = [
   { value: "customer", label: "Customer" },
   { value: "vendor", label: "Vendor" },
-  { value: "admin", label: "Admin" },
 ] as const
 
 // Shared styles for the inputs.
@@ -56,9 +55,7 @@ export function AuthForm({
       name: values.name ?? "",
       email: values.email,
       password: values.password,
-      role: (values.role === "vendor" || values.role === "admin"
-        ? values.role
-        : "customer") as AuthFormData["role"],
+      role: values.role === "vendor" ? "vendor" : "customer",
     }
   }
 
@@ -70,7 +67,6 @@ export function AuthForm({
     setError(null)
 
     const data = collectFormData(event.currentTarget)
-    console.log("Form data:", data)
 
     try {
       const result = await onSubmit?.(data)

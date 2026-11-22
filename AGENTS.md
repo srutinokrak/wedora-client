@@ -45,6 +45,7 @@ Build a complete role-based wedding planning platform named **WedPlan**.
 
 ## Roles
 
+
 There are three application roles:
 
 - Customer
