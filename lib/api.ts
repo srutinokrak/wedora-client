@@ -257,7 +257,6 @@ export const cancelCustomerBooking = async (bookingId: string) => {
   }
   return res.json()
 }
-
 export const getVendorServices = async (): Promise<VendorServiceData[]> => {
   const res = await protectedMutation("/vendor/services", "GET")
 
@@ -335,7 +334,16 @@ export const updateVendorBookingStatus = async (
   return res.json()
 }
 
-export const createVendorSubscriptionCheckout = async () => {
-  const res = await protectedMutation("/vendor/subscription/checkout", "POST")
-  return res.json()
+export const createVendorSubscriptionCheckout = async (amountCents: number) => {
+  const res = await protectedMutation("/vendor/subscription/checkout", "POST", { amountCents })
+  const body = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(body.message || `Failed to start checkout: ${res.status}`)
+  return body as { url?: string }
+}
+
+export const confirmVendorPayment = async (sessionId: string) => {
+  const res = await protectedMutation("/vendor/subscription/confirm", "POST", { sessionId })
+  const body = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(body.message || `Could not verify payment: ${res.status}`)
+  return body as { message: string; subscriptionPlan: string }
 }

@@ -31,7 +31,7 @@ const navigationByRole = {
     { section: "services", label: "My Services", icon: PackageIcon },
     { section: "add-service", label: "Add Service", icon: ChartNoAxesColumnIncreasingIcon },
     { section: "requests", label: "Booking Requests", icon: CalendarDaysIcon },
-    { section: "subscription", label: "Subscription", icon: CreditCardIcon },
+    { section: "subscription", label: "Premium Plan", icon: CreditCardIcon },
   ],
   admin: [
     { section: "overview", label: "Overview", icon: LayoutDashboardIcon },

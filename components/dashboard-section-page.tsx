@@ -18,7 +18,7 @@ const sectionTitles: Record<string, string> = {
   transactions: "Transactions",
   "add-service": "Add Service",
   requests: "Booking Requests",
-  subscription: "Subscription",
+  subscription: "Premium Plan",
 }
 
 const sectionsByRole: Record<string, string[]> = {

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { CheckIcon, CrownIcon, ZapIcon } from "lucide-react"
 import { getVendorOverview, createVendorSubscriptionCheckout } from "@/lib/api"
 
+const PREMIUM_PRICE_CENTS = 2900
+
 const FREE_FEATURES = [
   "Max 3 Active Services",
   "Basic Dashboard",
@@ -15,7 +17,7 @@ const PREMIUM_FEATURES = [
   "Premium Vendor Badge ⭐",
   "Priority in Search Results",
   "All Free Features",
-  "Monthly billing",
+  "One-time payment, no recurring billing",
 ]
 
 function PlanFeature({ text }: { text: string }) {
@@ -36,7 +38,9 @@ export default function VendorSubscription() {
 
   useEffect(() => {
     getVendorOverview()
-      .then((data) => setPlan(data.subscriptionPlan ?? "free"))
+      .then((data) => {
+        setPlan(data.subscriptionPlan ?? "free")
+      })
       .catch(() => setPlan("free"))
       .finally(() => setLoadingPlan(false))
   }, [])
@@ -46,7 +50,7 @@ export default function VendorSubscription() {
     setUpgradeMsg("")
     setUpgradeError("")
     try {
-      const data = await createVendorSubscriptionCheckout()
+      const data = await createVendorSubscriptionCheckout(PREMIUM_PRICE_CENTS)
       if (data?.url) {
         window.location.href = data.url
       } else {
@@ -64,7 +68,7 @@ export default function VendorSubscription() {
   return (
     <section>
       <p className="text-sm font-medium text-[#829778]">Vendor dashboard</p>
-      <h1 className="mt-2 font-serif text-3xl text-[#30362e]">Subscription</h1>
+      <h1 className="mt-2 font-serif text-3xl text-[#30362e]">Premium Plan</h1>
 
       {/* Current plan banner */}
       {!loadingPlan && (
@@ -103,7 +107,7 @@ export default function VendorSubscription() {
             )}
           </div>
           <p className="mt-1 text-2xl font-bold text-[#30362e]">
-            $0 <span className="text-sm font-normal text-[#74796f]">/ month</span>
+            $0 <span className="text-sm font-normal text-[#74796f]">free</span>
           </p>
 
           <ul className="mt-5 space-y-2.5">
@@ -130,8 +134,8 @@ export default function VendorSubscription() {
             )}
           </div>
           <p className="mt-1 text-2xl font-bold text-[#30362e]">
-            $29{" "}
-            <span className="text-sm font-normal text-[#74796f]">/ month</span>
+            ${(PREMIUM_PRICE_CENTS / 100).toFixed(2)}{" "}
+            <span className="text-sm font-normal text-[#74796f]">one-time</span>
           </p>
 
           <ul className="mt-5 space-y-2.5">
@@ -163,11 +167,7 @@ export default function VendorSubscription() {
             </button>
           )}
 
-          {isPremium && (
-            <div className="mt-6 rounded-lg border border-[#d6dbd0] px-4 py-2.5 text-center text-sm text-[#65775d]">
-              You have Premium ✓
-            </div>
-          )}
+          {isPremium && <div className="mt-6 rounded-lg border border-[#d6dbd0] px-4 py-2.5 text-center text-sm text-[#65775d]">Premium is active ✓</div>}
         </div>
       </div>
     </section>
