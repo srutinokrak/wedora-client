@@ -99,7 +99,7 @@ export default function AdminServices() {
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search service name"
-          className="min-w-0 flex-1 rounded-lg border border-[#d9ddd3] bg-white px-3 py-2.5 text-sm outline-none focus:border-[#829778]"
+          className="min-w-0 flex-1 rounded-lg border border-[#d9ddd3] bg-white px-3 py-2.5 text-sm text-[#30362e] placeholder:text-[#858980] outline-none focus:border-[#829778]"
         />
         <select
           value={status}
