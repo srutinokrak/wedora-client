@@ -78,11 +78,14 @@ export default function DashboardSectionPage({ section }: { section: string }) {
 
   return (
     <section>
-      <p className="text-sm font-medium capitalize text-[#829778]">{role} dashboard</p>
+      <p className="text-sm font-medium text-[#829778] capitalize">
+        {role} dashboard
+      </p>
       <h1 className="mt-2 font-serif text-3xl text-[#30362e]">{title}</h1>
       <div className="mt-6 rounded-xl border border-dashed border-[#d6dbd0] bg-white p-8">
         <p className="text-sm leading-6 text-[#74796f]">
-          This section is ready for its dashboard feature and data to be implemented.
+          This section is ready for its dashboard feature and data to be
+          implemented.
         </p>
         <Link
           href="/dashboard"
