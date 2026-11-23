@@ -1,8 +1,18 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { CalendarIcon, MapPinIcon, MessageSquareIcon, CheckIcon, XIcon } from "lucide-react"
-import { getVendorBookings, updateVendorBookingStatus, type VendorBookingData } from "@/lib/api"
+import {
+  CalendarIcon,
+  MapPinIcon,
+  MessageSquareIcon,
+  CheckIcon,
+  XIcon,
+} from "lucide-react"
+import {
+  getVendorBookings,
+  updateVendorBookingStatus,
+  type VendorBookingData,
+} from "@/lib/api"
 
 interface CustomerInfo {
   name: string
@@ -30,13 +40,17 @@ function normalizeBooking(b: VendorBookingData): Booking {
   return {
     id: (b._id ?? b.id ?? "") as string,
     customerId: b.customerId,
-    customerInfo: b.customerInfo?.name ? { name: b.customerInfo.name, email: b.customerInfo.email } : undefined,
+    customerInfo: b.customerInfo?.name
+      ? { name: b.customerInfo.name, email: b.customerInfo.email }
+      : undefined,
     serviceId: b.serviceId,
     serviceInfo: b.serviceInfo?.name ? { name: b.serviceInfo.name } : undefined,
     eventDate: b.eventDate,
     eventLocation: b.eventLocation,
     message: b.message,
-    status: (b.status === "cancelled" ? "rejected" : b.status) as Booking["status"],
+    status: (b.status === "cancelled"
+      ? "rejected"
+      : b.status) as Booking["status"],
     createdAt: b.createdAt,
   }
 }
@@ -84,7 +98,9 @@ export default function VendorBookingRequests() {
   useEffect(() => {
     getVendorBookings()
       .then((data) => setBookings(data.map(normalizeBooking)))
-      .catch(() => setFetchError("Failed to load booking requests. Please refresh."))
+      .catch(() =>
+        setFetchError("Failed to load booking requests. Please refresh.")
+      )
       .finally(() => setLoading(false))
   }, [])
 
@@ -95,7 +111,7 @@ export default function VendorBookingRequests() {
       const updated = await updateVendorBookingStatus(bookingId, action)
       // Optimistically update UI
       setBookings((prev) =>
-        prev.map((b) => (b.id === bookingId ? normalizeBooking(updated) : b)),
+        prev.map((b) => (b.id === bookingId ? normalizeBooking(updated) : b))
       )
       setActionMsg({
         id: bookingId,
@@ -117,7 +133,9 @@ export default function VendorBookingRequests() {
     return (
       <section>
         <p className="text-sm font-medium text-[#829778]">Vendor dashboard</p>
-        <h1 className="mt-2 font-serif text-3xl text-[#30362e]">Booking Requests</h1>
+        <h1 className="mt-2 font-serif text-3xl text-[#30362e]">
+          Booking Requests
+        </h1>
         <div className="mt-7 space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
             <div
@@ -138,7 +156,9 @@ export default function VendorBookingRequests() {
     return (
       <section>
         <p className="text-sm font-medium text-[#829778]">Vendor dashboard</p>
-        <h1 className="mt-2 font-serif text-3xl text-[#30362e]">Booking Requests</h1>
+        <h1 className="mt-2 font-serif text-3xl text-[#30362e]">
+          Booking Requests
+        </h1>
         <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-5">
           <p className="text-sm text-red-700">{fetchError}</p>
         </div>
@@ -149,7 +169,9 @@ export default function VendorBookingRequests() {
   return (
     <section>
       <p className="text-sm font-medium text-[#829778]">Vendor dashboard</p>
-      <h1 className="mt-2 font-serif text-3xl text-[#30362e]">Booking Requests</h1>
+      <h1 className="mt-2 font-serif text-3xl text-[#30362e]">
+        Booking Requests
+      </h1>
 
       {bookings.length === 0 ? (
         <div className="mt-7 rounded-xl border border-dashed border-[#d6dbd0] bg-white p-10 text-center">
@@ -165,10 +187,12 @@ export default function VendorBookingRequests() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="font-medium text-[#30362e]">
-                    {booking.customerInfo?.name ?? `Customer #${booking.customerId.slice(-6)}`}
+                    {booking.customerInfo?.name ??
+                      `Customer #${booking.customerId.slice(-6)}`}
                   </p>
                   <p className="mt-0.5 text-sm text-[#829778]">
-                    {booking.serviceInfo?.name ?? `Service #${booking.serviceId.slice(-6)}`}
+                    {booking.serviceInfo?.name ??
+                      `Service #${booking.serviceId.slice(-6)}`}
                   </p>
                 </div>
                 {statusBadge(booking.status)}
