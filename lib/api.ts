@@ -341,9 +341,12 @@ export const createVendorSubscriptionCheckout = async (amountCents: number) => {
   return body as { url?: string }
 }
 
-export const confirmVendorPayment = async (sessionId: string) => {
-  const res = await protectedMutation("/vendor/subscription/confirm", "POST", { sessionId })
+export const getVendorSubscriptionPaymentStatus = async (sessionId: string) => {
+  const res = await protectedMutation(
+    `/vendor/subscription/status/${encodeURIComponent(sessionId)}`,
+    "GET"
+  )
   const body = await res.json().catch(() => ({}))
-  if (!res.ok) throw new Error(body.message || `Could not verify payment: ${res.status}`)
-  return body as { message: string; subscriptionPlan: string }
+  if (!res.ok) throw new Error(body.message || `Could not check payment status: ${res.status}`)
+  return body as { status: "pending" | "paid" | "failed" | "expired" | "cancelled" }
 }

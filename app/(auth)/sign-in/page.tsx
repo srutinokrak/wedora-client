@@ -11,7 +11,7 @@ const SignInPage = () => {
     const callbackURL = new URLSearchParams(window.location.search).get("callbackURL")
     return callbackURL?.startsWith("/") && !callbackURL.startsWith("//")
       ? callbackURL
-      : "/"
+      : "/dashboard"
   }
 
   async function handleSignin(data: AuthFormData) {

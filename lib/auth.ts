@@ -36,6 +36,15 @@ export const auth = betterAuth({
   },
   hooks: {
     before: createAuthMiddleware(async (context) => {
+      if (
+        context.path === "/update-user" &&
+        Object.prototype.hasOwnProperty.call(context.body ?? {}, "role")
+      ) {
+        throw new APIError("FORBIDDEN", {
+          message: "You cannot change your account role.",
+        })
+      }
+
       if (context.path !== "/sign-up/email") {
         return
       }
