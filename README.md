@@ -34,7 +34,7 @@ Requirements: Node.js, npm, MongoDB Atlas (or another MongoDB deployment), Googl
 1. Clone the client repository and install dependencies:
 
    ```bash
-   npm install
+   npm i
    ```
 
 2. Create the client `.env` file:
