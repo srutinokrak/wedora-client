@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   CalendarDaysIcon,
   ChartNoAxesColumnIncreasingIcon,
@@ -74,6 +74,7 @@ function DashboardAccessDenied() {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
+  const pathname = usePathname()
   const { data: session, isPending } = useSession()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -116,18 +117,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <nav aria-label="Dashboard navigation" className="flex-1 space-y-1 px-3 py-4">
           {navigation.map((item) => {
             const Icon = item.icon
+            const href =
+              item.section === "overview" ? "/dashboard" : `/dashboard/${item.section}`
+            const active = pathname === href
 
             return (
-              <a
+              <Link
                 key={item.section}
-                href={`#${item.section}`}
+                href={href}
                 onClick={() => setMobileMenuOpen(false)}
-                aria-current={item.section === "overview" ? "location" : undefined}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#65705f] transition-colors hover:bg-[#eef0e9]"
+                aria-current={active ? "page" : undefined}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                  active
+                    ? "bg-[#e7ecdf] font-medium text-[#43513e]"
+                    : "text-[#65705f] hover:bg-[#eef0e9]"
+                }`}
               >
                 <Icon className="size-4" aria-hidden="true" />
                 {item.label}
-              </a>
+              </Link>
             )
           })}
 

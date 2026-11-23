@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { UploadIcon, CheckCircle2Icon, AlertCircleIcon } from "lucide-react"
-import { vendorFetch } from "@/lib/api"
+import { createVendorService } from "@/lib/api"
 
 const CATEGORIES = [
   "Photography & Videography",
@@ -108,22 +108,14 @@ export default function VendorAddService() {
       setUploadingImage(false)
 
       setSubmitting(true)
-      const res = await vendorFetch("/vendor/services", {
-        method: "POST",
-        body: JSON.stringify({
-          serviceName: fields.serviceName.trim(),
-          category: fields.category,
-          description: fields.description.trim(),
-          price: Number(fields.price),
-          location: fields.location.trim(),
-          images: [imageUrl],
-        }),
+      await createVendorService({
+        serviceName: fields.serviceName.trim(),
+        category: fields.category,
+        description: fields.description.trim(),
+        price: Number(fields.price),
+        location: fields.location.trim(),
+        images: [imageUrl],
       })
-
-      if (!res.ok) {
-        const body = (await res.json()) as { message?: string }
-        throw new Error(body.message ?? `Error ${res.status}`)
-      }
 
       setSuccessMsg("Service added successfully! It is pending admin approval.")
       setFields({ serviceName: "", category: "", description: "", price: "", location: "" })

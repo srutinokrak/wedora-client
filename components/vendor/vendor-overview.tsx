@@ -8,15 +8,7 @@ import {
   CalendarCheckIcon,
   CrownIcon,
 } from "lucide-react"
-import { vendorFetch } from "@/lib/api"
-
-interface VendorOverviewData {
-  totalServices: number
-  activeServices: number
-  pendingRequests: number
-  acceptedBookings: number
-  subscriptionPlan: string
-}
+import { getVendorOverview, type VendorOverviewData } from "@/lib/api"
 
 function SkeletonCard() {
   return (
@@ -56,13 +48,11 @@ export default function VendorOverview() {
   const [error, setError] = useState("")
 
   useEffect(() => {
-    vendorFetch("/vendor/overview")
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error ${res.status}`)
-        return res.json() as Promise<VendorOverviewData>
-      })
+    getVendorOverview()
       .then(setData)
-      .catch(() => setError("Failed to load overview data. Please refresh."))
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : "Failed to load overview data.")
+      })
       .finally(() => setLoading(false))
   }, [])
 

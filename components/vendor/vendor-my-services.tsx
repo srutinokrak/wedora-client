@@ -10,7 +10,7 @@ import {
   ToggleLeftIcon,
   ToggleRightIcon,
 } from "lucide-react"
-import { vendorFetch } from "@/lib/api"
+import { getVendorServices, updateVendorService, deleteVendorService } from "@/lib/api"
 
 const CATEGORIES = [
   "Photography & Videography",
@@ -127,11 +127,7 @@ export default function VendorMyServices() {
   const [togglingId, setTogglingId] = useState<string | null>(null)
 
   useEffect(() => {
-    vendorFetch("/vendor/services")
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error ${res.status}`)
-        return res.json() as Promise<ApiService[]>
-      })
+    getVendorServices()
       .then((data) => setServices(data.map(normalizeService)))
       .catch(() => setFetchError("Failed to load services. Please refresh."))
       .finally(() => setLoading(false))
@@ -187,15 +183,7 @@ export default function VendorMyServices() {
       }
       if (imageUrl) payload.images = [imageUrl]
 
-      const res = await vendorFetch(`/vendor/services/${serviceId}`, {
-        method: "PATCH",
-        body: JSON.stringify(payload),
-      })
-      if (!res.ok) {
-        const body = (await res.json()) as { message?: string }
-        throw new Error(body.message ?? `Error ${res.status}`)
-      }
-      const updated = (await res.json()) as ApiService
+      const updated = await updateVendorService(serviceId, payload)
       setServices((prev) =>
         prev.map((s) => (s.id === serviceId ? normalizeService(updated) : s)),
       )
@@ -218,13 +206,7 @@ export default function VendorMyServices() {
     setDeleting(true)
     setDeleteMsg(null)
     try {
-      const res = await vendorFetch(`/vendor/services/${serviceId}`, {
-        method: "DELETE",
-      })
-      if (!res.ok) {
-        const body = (await res.json()) as { message?: string }
-        throw new Error(body.message ?? `Error ${res.status}`)
-      }
+      await deleteVendorService(serviceId)
       setServices((prev) => prev.filter((s) => s.id !== serviceId))
       setConfirmDeleteId(null)
     } catch (err) {
@@ -242,12 +224,7 @@ export default function VendorMyServices() {
     setTogglingId(service.id)
     const newAvailability = service.availability === "active" ? "inactive" : "active"
     try {
-      const res = await vendorFetch(`/vendor/services/${service.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ availability: newAvailability }),
-      })
-      if (!res.ok) throw new Error(`Error ${res.status}`)
-      const updated = (await res.json()) as ApiService
+      const updated = await updateVendorService(service.id, { availability: newAvailability })
       setServices((prev) =>
         prev.map((s) => (s.id === service.id ? normalizeService(updated) : s)),
       )

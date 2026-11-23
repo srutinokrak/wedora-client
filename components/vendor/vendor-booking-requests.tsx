@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { CalendarIcon, MapPinIcon, MessageSquareIcon, CheckIcon, XIcon } from "lucide-react"
-import { vendorFetch } from "@/lib/api"
+import { getVendorBookings, updateVendorBookingStatus, type VendorBookingData } from "@/lib/api"
 
 interface CustomerInfo {
   name: string
@@ -26,31 +26,17 @@ interface Booking {
   createdAt: string
 }
 
-interface ApiBooking {
-  _id?: string
-  id?: string
-  customerId: string
-  customerInfo?: CustomerInfo
-  serviceId: string
-  serviceInfo?: ServiceInfo
-  eventDate: string
-  eventLocation: string
-  message?: string
-  status: "pending" | "accepted" | "rejected"
-  createdAt: string
-}
-
-function normalizeBooking(b: ApiBooking): Booking {
+function normalizeBooking(b: VendorBookingData): Booking {
   return {
     id: (b._id ?? b.id ?? "") as string,
     customerId: b.customerId,
-    customerInfo: b.customerInfo,
+    customerInfo: b.customerInfo?.name ? { name: b.customerInfo.name, email: b.customerInfo.email } : undefined,
     serviceId: b.serviceId,
-    serviceInfo: b.serviceInfo,
+    serviceInfo: b.serviceInfo?.name ? { name: b.serviceInfo.name } : undefined,
     eventDate: b.eventDate,
     eventLocation: b.eventLocation,
     message: b.message,
-    status: b.status,
+    status: (b.status === "cancelled" ? "rejected" : b.status) as Booking["status"],
     createdAt: b.createdAt,
   }
 }
@@ -96,11 +82,7 @@ export default function VendorBookingRequests() {
   const [actingId, setActingId] = useState<string | null>(null)
 
   useEffect(() => {
-    vendorFetch("/vendor/bookings")
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error ${res.status}`)
-        return res.json() as Promise<ApiBooking[]>
-      })
+    getVendorBookings()
       .then((data) => setBookings(data.map(normalizeBooking)))
       .catch(() => setFetchError("Failed to load booking requests. Please refresh."))
       .finally(() => setLoading(false))
@@ -110,15 +92,7 @@ export default function VendorBookingRequests() {
     setActingId(bookingId)
     setActionMsg(null)
     try {
-      const res = await vendorFetch(`/vendor/bookings/${bookingId}`, {
-        method: "PATCH",
-        body: JSON.stringify({ action }),
-      })
-      if (!res.ok) {
-        const body = (await res.json()) as { message?: string }
-        throw new Error(body.message ?? `Error ${res.status}`)
-      }
-      const updated = (await res.json()) as ApiBooking
+      const updated = await updateVendorBookingStatus(bookingId, action)
       // Optimistically update UI
       setBookings((prev) =>
         prev.map((b) => (b.id === bookingId ? normalizeBooking(updated) : b)),

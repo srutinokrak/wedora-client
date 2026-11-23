@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { CheckIcon, CrownIcon, ZapIcon } from "lucide-react"
-import { vendorFetch } from "@/lib/api"
-
-interface OverviewData {
-  subscriptionPlan: string
-}
+import { getVendorOverview, createVendorSubscriptionCheckout } from "@/lib/api"
 
 const FREE_FEATURES = [
   "Max 3 Active Services",
@@ -39,11 +35,7 @@ export default function VendorSubscription() {
   const [upgradeError, setUpgradeError] = useState("")
 
   useEffect(() => {
-    vendorFetch("/vendor/overview")
-      .then((res) => {
-        if (!res.ok) throw new Error()
-        return res.json() as Promise<OverviewData>
-      })
+    getVendorOverview()
       .then((data) => setPlan(data.subscriptionPlan ?? "free"))
       .catch(() => setPlan("free"))
       .finally(() => setLoadingPlan(false))
@@ -54,20 +46,11 @@ export default function VendorSubscription() {
     setUpgradeMsg("")
     setUpgradeError("")
     try {
-      const res = await vendorFetch("/vendor/subscription/checkout", {
-        method: "POST",
-      })
-      if (res.status === 501) {
-        setUpgradeMsg("Payment system not yet configured. Please check back soon.")
-        return
-      }
-      if (!res.ok) {
-        const body = (await res.json()) as { message?: string }
-        throw new Error(body.message ?? `Error ${res.status}`)
-      }
-      const data = (await res.json()) as { url?: string }
-      if (data.url) {
+      const data = await createVendorSubscriptionCheckout()
+      if (data?.url) {
         window.location.href = data.url
+      } else {
+        setUpgradeMsg("Payment system not yet configured. Please check back soon.")
       }
     } catch (err) {
       setUpgradeError(err instanceof Error ? err.message : "Failed to initiate checkout.")
