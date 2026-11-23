@@ -123,6 +123,9 @@ export interface AdminUserData {
   isBlocked: boolean
   createdAt?: string | null
   businessName?: string
+  subscriptionPlan?: string
+  subscriptionExpiresAt?: string | null
+  emailVerified?: boolean
 }
 
 export interface AdminServiceData {
