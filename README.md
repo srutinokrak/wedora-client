@@ -25,7 +25,7 @@ The client and API are maintained in separate repositories:
 
 - Client: https://github.com/srutinokrak/wedora-client
 - Server: https://github.com/srutinokrak/wedora-server
-- Live website: **Add the deployed client URL before submission.**
+- Live website: https://wedora-client-five.vercel.app/
 
 ## Local setup
 
@@ -95,7 +95,7 @@ Premium is $29 USD per month. The return page only reads the transaction status;
 
 Deploy the client and server separately. Configure the client environment variables in the client host and server variables in the API host. Set the production client URL as the server's `APP_URL` and `BETTER_AUTH_URL`; configure the deployed server's webhook URL in Stripe.
 
-- Live website: **Add the deployed client URL**
+- Live website: https://wedora-client-five.vercel.app
 - Client repository: https://github.com/srutinokrak/wedora-client
 - Server repository: https://github.com/srutinokrak/wedora-server
 - Evaluation admin email/password: provide privately through the assignment submission, not in this README or source control.
