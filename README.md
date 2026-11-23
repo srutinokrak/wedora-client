@@ -31,7 +31,7 @@ The client and API are maintained in separate repositories:
 
 Requirements: Node.js, npm, MongoDB Atlas, Google OAuth credentials (optional for Google sign-in), an ImgBB API key, and Stripe CLI/test credentials for testing payments.
 
-1. Clone the client repository and install dependencies:
+1. Clone the client repository then install dependencies:
 
    ```bash
    npm i
