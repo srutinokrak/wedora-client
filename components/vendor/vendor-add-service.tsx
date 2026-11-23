@@ -3,6 +3,7 @@
 import { useState, useRef } from "react"
 import { UploadIcon, CheckCircle2Icon, AlertCircleIcon } from "lucide-react"
 import { createVendorService } from "@/lib/api"
+import { uploadToImgBB } from "@/lib/imgbb"
 
 const CATEGORIES = [
   "Photography & Videography",
@@ -28,17 +29,6 @@ interface FieldErrors {
   price?: string
   location?: string
   image?: string
-}
-
-async function uploadToImgBB(file: File): Promise<string> {
-  const formData = new FormData()
-  formData.append("image", file)
-  const res = await fetch(
-    `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_KEY}`,
-    { method: "POST", body: formData },
-  )
-  const data = (await res.json()) as { data: { url: string } }
-  return data.data.url
 }
 
 const inputClass =

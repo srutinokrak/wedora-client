@@ -137,7 +137,7 @@ export default async function ServiceDetailsPage({ params }: ServiceDetailsPageP
             </p>
           </div>
 
-          <ServiceBookingPanel serviceId={service.id} />
+          <ServiceBookingPanel serviceId={service.id} vendorId={service.vendorId} />
         </div>
       </section>
     </main>

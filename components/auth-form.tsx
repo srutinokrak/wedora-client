@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import Link from "next/link"
-import { Eye, EyeOff, LockIcon, MailIcon, UserIcon } from "lucide-react"
+import { Eye, EyeOff, LockIcon, MailIcon, TrashIcon, UploadIcon, UserIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { uploadToImgBB } from "@/lib/imgbb"
 
 // The two modes of this form.
 const modes = [
@@ -21,6 +22,7 @@ export type AuthFormData = {
   email: string
   password: string
   role: "customer" | "vendor"
+  image?: string
 }
 
 // The pick-a-role pills shown on Sign Up.
@@ -50,6 +52,10 @@ export function AuthForm({
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [selectedRole, setSelectedRole] = useState<AuthFormData["role"]>("customer")
+  const [profileImage, setProfileImage] = useState("")
+  const [profileImageName, setProfileImageName] = useState("")
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const imageInputRef = useRef<HTMLInputElement>(null)
 
   // 1. Collect every input inside the form by its name.
   function collectFormData(form: HTMLFormElement): AuthFormData {
@@ -60,7 +66,36 @@ export function AuthForm({
       email: values.email,
       password: values.password,
       role: values.role === "vendor" ? "vendor" : "customer",
+      image: profileImage || undefined,
     }
+  }
+
+  async function handleProfileImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setUploadingImage(true)
+    setError(null)
+    try {
+      const imageUrl = await uploadToImgBB(file)
+      setProfileImage(imageUrl)
+      setProfileImageName(file.name)
+    } catch (uploadError) {
+      setProfileImage("")
+      setProfileImageName("")
+      setError(
+        uploadError instanceof Error ? uploadError.message : "Image upload failed.",
+      )
+      event.target.value = ""
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
+  function clearProfileImage() {
+    setProfileImage("")
+    setProfileImageName("")
+    if (imageInputRef.current) imageInputRef.current.value = ""
   }
 
   // 2. Hand the data to the page (which sends it to better-auth).
@@ -129,17 +164,64 @@ export function AuthForm({
       {/* The form itself */}
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
         {mode === "signup" && (
-          <div className="relative">
-            <UserIcon className={iconClass} aria-hidden />
-            <input
-              id="name"
-              name="name"
-              type="text"
-              required
-              placeholder="Full name"
-              className={inputClass}
-            />
-          </div>
+          <>
+            <div className="flex items-center gap-3">
+              {profileImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profileImage}
+                  alt="Profile photo preview"
+                  className="size-12 rounded-full object-cover"
+                />
+              ) : (
+                <span className="grid size-12 place-items-center rounded-full bg-[#edf1e8] text-[#73876a]">
+                  <UserIcon className="size-5" aria-hidden="true" />
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => imageInputRef.current?.click()}
+                disabled={uploadingImage}
+                className="flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-foreground/80 hover:border-white/25 disabled:opacity-60"
+              >
+                <UploadIcon className="size-4" aria-hidden="true" />
+                {uploadingImage ? "Uploading..." : "Upload profile photo"}
+              </button>
+              <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleProfileImageChange}
+              />
+              {profileImage && (
+                <>
+                  <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
+                    {profileImageName}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={clearProfileImage}
+                    aria-label="Remove profile photo"
+                    className="rounded-md p-2 text-muted-foreground hover:text-foreground"
+                  >
+                    <TrashIcon className="size-4" aria-hidden="true" />
+                  </button>
+                </>
+              )}
+            </div>
+            <div className="relative">
+              <UserIcon className={iconClass} aria-hidden />
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                placeholder="Full name"
+                className={inputClass}
+              />
+            </div>
+          </>
         )}
 
         <div className="relative">
@@ -217,8 +299,17 @@ export function AuthForm({
           </div>
         )}
 
-        <Button type="submit" size="lg" disabled={loading} className="mt-2 w-full rounded-xl">
-          {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}
+        <Button
+          type="submit"
+          size="lg"
+          disabled={loading || uploadingImage}
+          className="mt-2 w-full rounded-xl"
+        >
+          {loading || uploadingImage
+            ? "Please wait..."
+            : mode === "signin"
+              ? "Sign In"
+              : "Create Account"}
         </Button>
 
         {/* Server error message (e.g. "email is already taken") */}

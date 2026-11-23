@@ -11,6 +11,7 @@ import {
   ToggleRightIcon,
 } from "lucide-react"
 import { getVendorServices, updateVendorService, deleteVendorService } from "@/lib/api"
+import { uploadToImgBB } from "@/lib/imgbb"
 
 const CATEGORIES = [
   "Photography & Videography",
@@ -71,17 +72,6 @@ function statusBadge(status: string) {
       {status}
     </span>
   )
-}
-
-async function uploadToImgBB(file: File): Promise<string> {
-  const formData = new FormData()
-  formData.append("image", file)
-  const res = await fetch(
-    `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_KEY}`,
-    { method: "POST", body: formData },
-  )
-  const data = (await res.json()) as { data: { url: string } }
-  return data.data.url
 }
 
 function normalizeService(s: ApiService): VendorService {

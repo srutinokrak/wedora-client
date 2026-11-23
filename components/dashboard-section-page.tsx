@@ -6,6 +6,10 @@ import VendorAddService from "@/components/vendor/vendor-add-service"
 import VendorBookingRequests from "@/components/vendor/vendor-booking-requests"
 import VendorMyServices from "@/components/vendor/vendor-my-services"
 import VendorSubscription from "@/components/vendor/vendor-subscription"
+import CustomerBookings from "@/components/customer/customer-bookings"
+import AdminUsers from "@/components/admin/admin-users"
+import AdminServices from "@/components/admin/admin-services"
+import AdminTransactions from "@/components/admin/admin-transactions"
 import { useSession } from "@/lib/auth-client"
 
 const sectionTitles: Record<string, string> = {
@@ -57,11 +61,19 @@ export default function DashboardSectionPage({ section }: { section: string }) {
     )
   }
 
+  if (role === "customer" && section === "bookings") return <CustomerBookings />
+
   if (role === "vendor") {
     if (section === "services") return <VendorMyServices />
     if (section === "add-service") return <VendorAddService />
     if (section === "requests") return <VendorBookingRequests />
     if (section === "subscription") return <VendorSubscription />
+  }
+
+  if (role === "admin") {
+    if (section === "users") return <AdminUsers />
+    if (section === "services") return <AdminServices />
+    if (section === "transactions") return <AdminTransactions />
   }
 
   return (

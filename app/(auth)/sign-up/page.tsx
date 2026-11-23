@@ -20,6 +20,7 @@ const SignUpPage = () => {
       email: data.email,
       password: data.password,
       role: data.role,
+      image: data.image,
       callbackURL: getSafeCallbackURL(),
     })
     if (error) {
