@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { CheckIcon, CrownIcon, ZapIcon } from "lucide-react"
-import { getVendorOverview, createVendorSubscriptionCheckout } from "@/lib/api"
+import {
+  cancelVendorSubscription,
+  createVendorSubscriptionCheckout,
+  getVendorOverview,
+} from "@/lib/api"
 
 const PREMIUM_PRICE_CENTS = 2900
 
@@ -17,7 +21,7 @@ const PREMIUM_FEATURES = [
   "Premium Vendor Badge ⭐",
   "Priority in Search Results",
   "All Free Features",
-  "One-time payment, no recurring billing",
+  "Billed monthly; cancel any time",
 ]
 
 function PlanFeature({ text }: { text: string }) {
@@ -33,6 +37,9 @@ export default function VendorSubscription() {
   const [plan, setPlan] = useState<string | null>(null)
   const [loadingPlan, setLoadingPlan] = useState(true)
   const [upgrading, setUpgrading] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelAtPeriodEnd, setCancelAtPeriodEnd] = useState(false)
+  const [expiresAt, setExpiresAt] = useState<string | null>(null)
   const [upgradeMsg, setUpgradeMsg] = useState("")
   const [upgradeError, setUpgradeError] = useState("")
 
@@ -40,8 +47,10 @@ export default function VendorSubscription() {
     getVendorOverview()
       .then((data) => {
         setPlan(data.subscriptionPlan ?? "free")
+        setCancelAtPeriodEnd(Boolean(data.subscriptionCancelAtPeriodEnd))
+        setExpiresAt(data.subscriptionExpiresAt ?? null)
       })
-      .catch(() => setPlan("free"))
+      .catch((err) => setUpgradeError(err instanceof Error ? err.message : "Could not load subscription details."))
       .finally(() => setLoadingPlan(false))
   }, [])
 
@@ -60,6 +69,23 @@ export default function VendorSubscription() {
       setUpgradeError(err instanceof Error ? err.message : "Failed to initiate checkout.")
     } finally {
       setUpgrading(false)
+    }
+  }
+
+  async function handleCancelSubscription() {
+    setCancelling(true)
+    setUpgradeMsg("")
+    setUpgradeError("")
+    try {
+      const result = await cancelVendorSubscription()
+      setCancelAtPeriodEnd(true)
+      setUpgradeMsg(result.message)
+      const data = await getVendorOverview()
+      setExpiresAt(data.subscriptionExpiresAt ?? null)
+    } catch (err) {
+      setUpgradeError(err instanceof Error ? err.message : "Could not cancel your subscription.")
+    } finally {
+      setCancelling(false)
     }
   }
 
@@ -83,10 +109,15 @@ export default function VendorSubscription() {
           </p>
           {isPremium && (
             <span className="ml-auto rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700">
-              Active
+              {cancelAtPeriodEnd ? "Cancels at period end" : "Active"}
             </span>
           )}
         </div>
+      )}
+      {isPremium && expiresAt && (
+        <p className="mt-2 text-sm text-[#74796f]">
+          {cancelAtPeriodEnd ? "Premium access ends" : "Next renewal"}: {new Date(expiresAt).toLocaleDateString()}
+        </p>
       )}
 
       <div className="mt-7 grid gap-5 sm:grid-cols-2 max-w-3xl">
@@ -135,7 +166,7 @@ export default function VendorSubscription() {
           </div>
           <p className="mt-1 text-2xl font-bold text-[#30362e]">
             ${(PREMIUM_PRICE_CENTS / 100).toFixed(2)}{" "}
-            <span className="text-sm font-normal text-[#74796f]">one-time</span>
+            <span className="text-sm font-normal text-[#74796f]">per month</span>
           </p>
 
           <ul className="mt-5 space-y-2.5">
@@ -168,6 +199,16 @@ export default function VendorSubscription() {
           )}
 
           {isPremium && <div className="mt-6 rounded-lg border border-[#d6dbd0] px-4 py-2.5 text-center text-sm text-[#65775d]">Premium is active ✓</div>}
+          {isPremium && !cancelAtPeriodEnd && (
+            <button
+              type="button"
+              onClick={handleCancelSubscription}
+              disabled={cancelling}
+              className="mt-3 w-full rounded-lg border border-[#d9ddd3] py-2.5 text-sm font-medium text-[#65705f] hover:bg-[#f2f3ed] disabled:opacity-60"
+            >
+              {cancelling ? "Cancelling…" : "Cancel subscription"}
+            </button>
+          )}
         </div>
       </div>
     </section>

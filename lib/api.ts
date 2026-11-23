@@ -43,6 +43,8 @@ export interface VendorOverviewData {
   pendingRequests: number
   acceptedBookings: number
   subscriptionPlan: string
+  subscriptionExpiresAt?: string | null
+  subscriptionCancelAtPeriodEnd?: boolean
 }
 
 export interface VendorServiceData {
@@ -339,6 +341,13 @@ export const createVendorSubscriptionCheckout = async (amountCents: number) => {
   const body = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(body.message || `Failed to start checkout: ${res.status}`)
   return body as { url?: string }
+}
+
+export const cancelVendorSubscription = async () => {
+  const res = await protectedMutation("/vendor/subscription/cancel", "POST")
+  const body = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(body.message || `Failed to cancel subscription: ${res.status}`)
+  return body as { message: string }
 }
 
 export const getVendorSubscriptionPaymentStatus = async (sessionId: string) => {
