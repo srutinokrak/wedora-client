@@ -54,7 +54,7 @@ Requirements: Node.js, npm, MongoDB Atlas (or another MongoDB deployment), Googl
 3. In a separate terminal, clone the server repository, install dependencies, and configure its `.env` using [the server README](https://github.com/srutinokrak/wedora-server):
 
    ```bash
-   npm install
+   npm i
    npm run dev
    ```
 
