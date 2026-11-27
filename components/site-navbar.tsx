@@ -41,7 +41,7 @@ export function SiteNavbar() {
     router.push("/")
   }
 
-  const userName = session?.user?.name?.trim() || "WedPlan User"
+  const userName = session?.user?.name?.trim() || "Wedora User"
   const userInitial = userName.charAt(0).toUpperCase()
   const profileImage =
     "image" in (session?.user ?? {}) && typeof session?.user?.image === "string"

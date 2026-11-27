@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 
 import { cn } from "@/lib/utils";
 import { AppShell } from "@/components/app-shell"
+import { Toaster } from "react-hot-toast";
+
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'})
 
@@ -26,6 +28,9 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
+          {/* <Toaster position="bottom-right"/> */}
+          <div><Toaster/></div>
+
           <AppShell>{children}</AppShell>
         </ThemeProvider>
       </body>

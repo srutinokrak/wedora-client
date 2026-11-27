@@ -11,7 +11,7 @@ export function WedPlanLogo({
   return (
     <Link
       href="/"
-      aria-label="WedPlan home"
+      aria-label="Wedora home"
       className="flex shrink-0 items-center gap-2"
     >
       <span
@@ -40,7 +40,7 @@ export function WedPlanLogo({
                 : "block font-serif text-xl italic tracking-wide text-[#30362e]"
             }
           >
-            WedPlan
+            Wedora
           </span>
           <span
             className={

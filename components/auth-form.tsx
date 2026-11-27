@@ -338,7 +338,7 @@ export function AuthForm({
         <p className="mt-1 text-center text-sm text-muted-foreground">
           {mode === "signin" ? (
             <>
-              New to WedPlan?{" "}
+              New to Wedora?{" "}
               <Link href="/sign-up" className="text-primary hover:underline">
                 Sign Up
               </Link>

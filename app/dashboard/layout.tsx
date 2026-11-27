@@ -62,7 +62,7 @@ function DashboardAccessDenied() {
       <div className="max-w-md rounded-xl border border-[#e1dfd5] bg-white p-8 text-center">
         <h1 className="font-serif text-2xl text-[#30362e]">Dashboard unavailable</h1>
         <p className="mt-2 text-sm text-[#74796f]">
-          This account does not have a supported WedPlan role.
+          This account does not have a supported Wedora role.
         </p>
         <Link href="/" className="mt-5 inline-block text-sm font-medium text-[#65775d]">
           Return home
@@ -94,7 +94,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   const navigation = navigationByRole[role]
-  const name = session.user.name || "WedPlan User"
+  const name = session.user.name || "Wedora User"
 
   async function handleSignOut() {
     await signOut()
@@ -171,7 +171,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="min-w-0 flex-1">
         <header className="flex h-16 items-center justify-between border-b border-[#e1dfd5] bg-white px-4 sm:px-6 lg:justify-end">
           <Link href="/" className="font-serif text-lg italic text-[#30362e] lg:hidden">
-            WedPlan
+            Wedora
           </Link>
           <p className="hidden text-sm text-[#74796f] lg:block">
             Wedding planning workspace

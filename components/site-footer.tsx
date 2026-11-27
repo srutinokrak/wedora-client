@@ -49,8 +49,8 @@ export function SiteFooter() {
           <ul className="mt-4 space-y-3 text-sm text-[#74796f]">
             <li className="flex items-start gap-2">
               <MailIcon className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <a href="mailto:hello@wedplan.com" className="hover:text-primary">
-                hello@wedplan.com
+              <a href="mailto:hello@Wedora.com" className="hover:text-primary">
+                hello@Wedora.com
               </a>
             </li>
             <li className="flex items-start gap-2">
@@ -92,7 +92,7 @@ export function SiteFooter() {
 
       <div className="border-t border-[#e2dfd6]">
         <p className="mx-auto max-w-7xl px-4 py-5 text-center text-xs text-[#858980] sm:px-6 sm:text-left">
-          © {new Date().getFullYear()} WedPlan. All rights reserved.
+          © {new Date().getFullYear()} Wedora. All rights reserved.
         </p>
       </div>
     </footer>

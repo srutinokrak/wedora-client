@@ -1,6 +1,6 @@
-# WedPlan
+# Wedora
 
-WedPlan is a wedding-planning marketplace where customers can discover and book wedding services, vendors can manage listings and bookings, and admins can moderate the platform.
+Wedora is a wedding-planning marketplace where customers can discover and book wedding services, vendors can manage listings and bookings, and admins can moderate the platform.
 
 ## Features
 
@@ -74,7 +74,7 @@ Run the API server and the Next.js client, then forward Stripe test events to th
 stripe listen --events "checkout.session.completed,checkout.session.async_payment_succeeded,checkout.session.async_payment_failed,checkout.session.expired,customer.subscription.updated,customer.subscription.deleted,invoice.payment_failed" --forward-to http://localhost:5000/stripe/webhook
 ```
 
-Set the `whsec_...` value printed by Stripe CLI as `STRIPE_WEBHOOK_SECRET` in the **server** environment. Start Checkout from the vendor dashboard; a synthetic Stripe CLI fixture is not tied to an existing WedPlan transaction.
+Set the `whsec_...` value printed by Stripe CLI as `STRIPE_WEBHOOK_SECRET` in the **server** environment. Start Checkout from the vendor dashboard; a synthetic Stripe CLI fixture is not tied to an existing Wedora transaction.
 
 Premium is $29 USD per month. The return page only reads the transaction status; Premium is enabled or removed by verified server-side Stripe webhook events.
 

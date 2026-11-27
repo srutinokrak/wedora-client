@@ -38,7 +38,7 @@ export default function CustomerBookings() {
         bookingId: booking._id ?? booking.id ?? "",
         title: booking.serviceInfo?.serviceName ?? booking.serviceInfo?.name ?? booking.serviceName ?? "Wedding service",
         image: booking.serviceInfo?.images?.[0] ?? booking.serviceInfo?.image ?? booking.serviceImage ?? "",
-        vendor: booking.vendorInfo?.name ?? booking.vendorName ?? "WedPlan vendor",
+        vendor: booking.vendorInfo?.name ?? booking.vendorName ?? "Wedora vendor",
       }))))
       .catch((err) => setError(err instanceof Error ? err.message : "Could not load your bookings."))
       .finally(() => setLoading(false))

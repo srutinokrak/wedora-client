@@ -57,7 +57,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
       <section className="border-b border-[#e7e5dc] bg-[#f2f3ed] px-4 py-12 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#829778]">
-            WedPlan Marketplace
+            Wedora Marketplace
           </p>
           <h1 className="mt-3 font-serif text-4xl text-[#30362e] sm:text-5xl">
             Browse Wedding Services

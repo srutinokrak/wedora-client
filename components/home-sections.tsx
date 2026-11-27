@@ -170,7 +170,7 @@ export function HomeSections() {
               transition={{ duration: 0.5 }}
             >
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#91a488]">
-                Why choose WedPlan
+                Why choose wedora
               </p>
               <h2 className="mt-3 max-w-md font-serif text-4xl leading-tight text-[#30362e] sm:text-5xl">
                 Planning made personal, simple and beautiful.
@@ -209,7 +209,7 @@ export function HomeSections() {
             className="mt-16 rounded-sm border border-[#dde2d7] bg-[#edf1e8] px-6 py-10 sm:px-10"
           >
             <p className="text-center text-xs font-semibold uppercase tracking-[0.24em] text-[#788a70]">
-              How WedPlan works
+              How wedora works
             </p>
             <div className="mt-8 grid gap-8 md:grid-cols-3">
               {steps.map((step) => {

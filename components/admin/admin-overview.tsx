@@ -25,7 +25,7 @@ export default function AdminOverview({ name }: { name: string }) {
     <section>
       <p className="text-sm font-medium text-[#829778]">Admin dashboard</p>
       <h1 className="mt-2 font-serif text-3xl text-[#30362e] sm:text-4xl">Welcome, {name}</h1>
-      <p className="mt-2 text-sm text-[#74796f]">A summary of WedPlan activity.</p>
+      <p className="mt-2 text-sm text-[#74796f]">A summary of Wedora activity.</p>
       {error ? <p role="alert" className="mt-6 rounded-lg bg-red-50 p-4 text-sm text-red-700">{error}</p> : (
         <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {items.map(([key, label, Icon]) => (

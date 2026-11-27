@@ -33,11 +33,12 @@ export function VendorPaymentReturn({
     if (cancelled) return
     if (!sessionId) return
 
+    const checkoutSessionId = sessionId
     let active = true
     async function checkPaymentStatus() {
       try {
         for (let attempt = 0; attempt < 15; attempt += 1) {
-          const result = await getVendorSubscriptionPaymentStatus(sessionId)
+          const result = await getVendorSubscriptionPaymentStatus(checkoutSessionId)
           if (!active) return
           if (result.status === "paid") {
             setMessage("Stripe confirmed your payment. Premium is active.")
